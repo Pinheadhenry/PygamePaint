@@ -3,6 +3,7 @@ from Colors import Color
 from Toolbar import ToolBar
 from Pen import Pen
 from Slider import Slider
+from Redo import Redo
 
 pygame.init()
 
@@ -21,6 +22,7 @@ currentColor = (redSlider.value * 25.5, greenSlider.value * 25.5, blueSlider.val
 
 sizeSlider = Slider(400, 50)
 pen = Pen()
+redo = Redo()
 
 screen.fill((255, 255, 255))
 
@@ -29,15 +31,21 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            redo.clicked(screen, sizeSlider.value)
+        if event.type == pygame.MOUSEBUTTONUP:
+            redo.addHistory()
 
     currentColor = (redSlider.value * 25.5, greenSlider.value * 25.5, blueSlider.value * 25.5)
 
     toolbar.draw(SCREEN_LENGTH)
-    pen.draw(toolbar.toolbarH, screen, SCREEN_LENGTH, SCREEN_WIDTH, sizeSlider.value, currentColor)
+    pen.draw(toolbar.toolbarH, screen, SCREEN_LENGTH, SCREEN_WIDTH, sizeSlider.value, currentColor, redo)
     sizeSlider.draw(screen, Color.BLACK)
     redSlider.draw(screen, Color.RED)
     greenSlider.draw(screen, Color.GREEN)
     blueSlider.draw(screen, Color.BLUE)
     toolbar.drawCurrentColor(currentColor, 175, 25, 50)
+    redo.drawButton(screen)
+    
     clock.tick(1000)
     pygame.display.update()
